@@ -1,0 +1,10 @@
+{
+  "app.name": "HumaVolve",
+  "app.tagline": "Internship training workspace",
+  "home.title": "Welcome to HumaVolve",
+  "home.subtitle": "A clean, scalable React + TypeScript + Vite foundation.",
+  "nav.home": "Home",
+  "nav.about": "About",
+  "common.loading": "Loading…",
+  "common.empty": "Nothing to show yet"
+}
