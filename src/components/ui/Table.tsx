@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { isValidElement, type ReactNode } from 'react';
 
 export interface Column<T> {
   /** Displayed column header. */
@@ -22,9 +22,32 @@ export interface TableProps<T> {
   getRowKey?: (row: T, index: number) => string | number;
 }
 
+function isRecordWithId(value: unknown): value is { id: unknown } {
+  return typeof value === 'object' && value !== null && 'id' in value;
+}
+
+/**
+ * Render a raw cell value without an unsafe cast.
+ * Primitives and React elements render directly; nullish values render as
+ * an empty string; anything else falls back to a stable string form so an
+ * unexpected object can never crash React rendering.
+ */
+function toCellContent<T>(value: T[keyof T]): ReactNode {
+  if (value === null || value === undefined) return '';
+  if (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+  ) {
+    return value;
+  }
+  if (isValidElement(value)) return value;
+  return String(value);
+}
+
 function defaultRowKey<T>(row: T, index: number): string | number {
-  if (typeof row === 'object' && row !== null && 'id' in row) {
-    const id = (row as Record<string, unknown>).id;
+  if (isRecordWithId(row)) {
+    const { id } = row;
     if (typeof id === 'string' || typeof id === 'number') return id;
   }
   return index;
@@ -78,7 +101,7 @@ export function Table<T>({
                       <td key={String(column.key)}>
                         {column.render
                           ? column.render(value, row)
-                          : (value as ReactNode)}
+                          : toCellContent(value)}
                       </td>
                     );
                   })}

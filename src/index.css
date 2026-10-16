@@ -82,9 +82,20 @@ ul {
 }
 
 .navbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 700;
   color: var(--color-text);
   text-decoration: none;
+}
+
+.navbar__logo {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .navbar__links {

@@ -6,7 +6,14 @@ export function Navbar() {
     <header className="navbar">
       <div className="navbar__inner">
         <a className="navbar__brand" href={ROUTES.HOME}>
-          HumaVolve
+          <img
+            className="navbar__logo"
+            src="/huma-volve-logo.jpg"
+            alt="HumaVolve academy logo"
+            width={32}
+            height={32}
+          />
+          <span>HumaVolve</span>
         </a>
         <nav aria-label="Primary">
           <ul className="navbar__links">

@@ -26,17 +26,19 @@ export function validateUser(value: unknown): ValidationResult {
   }
 
   const errors: Record<string, string> = {};
-  const candidate = value as Partial<Record<keyof User, unknown>>;
+  const id: unknown = Reflect.get(value, 'id');
+  const name: unknown = Reflect.get(value, 'name');
+  const email: unknown = Reflect.get(value, 'email');
 
-  if (typeof candidate.id !== 'number' || Number.isNaN(candidate.id)) {
+  if (typeof id !== 'number' || Number.isNaN(id)) {
     errors.id = 'id must be a number.';
   }
 
-  if (typeof candidate.name !== 'string' || candidate.name.trim().length === 0) {
+  if (typeof name !== 'string' || name.trim().length === 0) {
     errors.name = 'name must be a non-empty string.';
   }
 
-  if (typeof candidate.email !== 'string' || !EMAIL_PATTERN.test(candidate.email)) {
+  if (typeof email !== 'string' || !EMAIL_PATTERN.test(email)) {
     errors.email = 'email must be a valid email address.';
   }
 
@@ -44,4 +46,14 @@ export function validateUser(value: unknown): ValidationResult {
     isValid: Object.keys(errors).length === 0,
     errors,
   };
+}
+
+/** Type predicate: true only when `value` has the full user shape. */
+export function isUser(value: unknown): value is User {
+  return validateUser(value).isValid;
+}
+
+/** Type predicate for a list of users. */
+export function isUserArray(value: unknown): value is User[] {
+  return Array.isArray(value) && value.every(isUser);
 }
