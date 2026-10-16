@@ -27,6 +27,7 @@ internationalization, assets, schemas, and utilities.
 | Task | Title                   | Status    | Completion date |
 | ---- | ----------------------- | --------- | --------------- |
 | 01   | React Project Structure | Completed | October 14, 2026 |
+| 02   | Reusable Components in React | Completed | October 15, 2026 |
 
 **Task 01 — React Project Structure** was completed on October 14, 2026. The
 task established the initial React and TypeScript workspace using Vite and
@@ -40,6 +41,47 @@ initialization in the workspace root; a documented `src/` folder structure;
 small, typed example files in every required folder; removal of the Vite
 demo UI and unused starter assets; a minimal accessible UI baseline; and a
 production build that passes.
+
+**Assignment 02 — Reusable Components in React** was completed on
+October 15, 2026.
+
+Objective: add genuinely reusable, prop-driven Button, Card, and Table
+components and demonstrate them on the Home page.
+
+Components (all under `src/components/ui/`):
+
+- `Button.tsx` — props: `text`, `onClick`, `variant`
+  (`"primary" | "secondary" | "danger"`), `disabled`, plus optional native
+  button attributes. Uses a native `<button type="button">`, forwards clicks,
+  and respects `disabled` visually and functionally. `children` remains
+  accepted for Assignment 01 backwards compatibility, but `text` is the
+  documented API.
+- `Card.tsx` — props: `title`, `description`, `image?`, `imageAlt?`,
+  `children?`. Renders semantic `<article>` markup, shows the image only when
+  provided (with alt fallback `"${title} illustration"`), and renders nested
+  JSX through `children`.
+- `Table.tsx` — generic `Table<T>` with props `columns: Column<T>[]`,
+  `data: T[]`, `striped?`, `emptyMessage?`, `caption?`, `getRowKey?`.
+  `Column<T> = { header: string; key: keyof T; render? }`. Renders semantic
+  `<table>` / `<thead>` / `<tbody>` / `<th scope="col">` / `<td>`, alternating
+  row backgrounds when `striped` is set, a graceful empty state for `data=[]`,
+  and stable keys (explicit `getRowKey`, else row `id`, else index fallback).
+
+Demonstration (`src/pages/Home.tsx`, sample data in `src/data/courses.ts`):
+
+- Introduction section with the assignment title and reusability explanation.
+- Button showcase: primary, secondary, danger, and disabled Buttons updating a
+  visible `role="status"` message (plus reset); no browser alerts.
+- Card showcase: two Cards with different data; the first includes an image and
+  nested children (metadata paragraph + Button that updates shared demo state);
+  the second Card also uses children and reflects that shared state.
+- Table showcase: internship course dataset (name, level, lessons, status —
+  4 rows) with `striped` enabled and a custom status badge via `render`.
+- Learning note on consistency, reuse, maintainability, separation of concerns.
+- The Assignment 01 loading/empty-state demo is preserved below.
+
+Verification (run October 16, 2026): `npm run build` passed (`tsc -b` +
+Vite build, 27 modules); `npm run lint` passed with no errors.
 
 ## Tech Stack
 
