@@ -133,8 +133,8 @@ export default function Home() {
           <Card
             title="React Fundamentals"
             description="Learn how reusable components simplify development, one prop at a time."
-            image="https://picsum.photos/seed/humavolve-react/640/360"
-            imageAlt="Abstract illustration for the React Fundamentals card"
+            image="https://huma-volve.com/guest/assets/images/hero-image.jpg?v=1785912949"
+            imageAlt="Hero image for the React Fundamentals card"
           >
             <p className="card__meta">8 lessons · Beginner friendly</p>
             <Button

@@ -13,7 +13,7 @@ export interface ValidationResult {
   errors: Record<string, string>;
 }
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 /**
  * Validate an unknown value against the expected {@link User} shape.
