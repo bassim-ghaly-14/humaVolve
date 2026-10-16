@@ -8,7 +8,7 @@ export function Navbar() {
         <a className="navbar__brand" href={ROUTES.HOME}>
           <img
             className="navbar__logo"
-            src="/huma-volve-logo.jpg"
+            src={`${import.meta.env.BASE_URL}huma-volve-logo.jpg`}
             alt="HumaVolve academy logo"
             width={32}
             height={32}
