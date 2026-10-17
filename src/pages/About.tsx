@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, CircleCheck, Folder, Layers, ShoppingBag } from 'lucide-react';
 import { Assignment02Showcase } from '../components/about/Assignment02Showcase';
+import { AssignmentSubmissionSection } from '../components/about/AssignmentSubmissionSection';
 import { ROUTES } from '../constants/routes';
 
 /** About page: workspace intro plus showcase of Assignments 01-03. */
@@ -255,6 +256,7 @@ export default function About() {
           </Link>
         </div>
       </section>
+      <AssignmentSubmissionSection />
     </main>
   );
 }
