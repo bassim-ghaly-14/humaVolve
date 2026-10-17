@@ -260,6 +260,33 @@ ul {
   padding: 0.75rem 1rem;
 }
 
+/* Gap between the Button showcase status message and its Reset button.
+ * Scoped to .showcase so other uses of .status are unaffected. */
+.showcase .status {
+  margin: 0 0 1rem;
+}
+
+/* Assignment 01 foundation demo: vertical rhythm between the heading, the
+ * Load example button, and the loading/empty state below it. Scoped to
+ * .page__demo so shared .button/.skeleton/.empty-state are untouched. */
+.page__demo {
+  display: grid;
+  gap: 1rem;
+  justify-items: stretch;
+}
+
+.page__demo h2 {
+  margin: 0;
+}
+
+.page__demo > .button {
+  justify-self: start;
+}
+
+.page__demo .skeleton {
+  margin-top: 0;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -647,5 +674,332 @@ ul {
     --color-text: #f2f2f5;
     --color-text-muted: #a0a0aa;
     --color-border: #34343d;
+  }
+}
+
+/* About page (scoped `.about-*` classes; baseline above untouched). */
+
+.about-hero {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.about-hero h1 {
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  letter-spacing: -0.01em;
+  margin: 0 0 0.75rem;
+}
+
+.about-lede {
+  font-size: 1.075rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  max-width: 62ch;
+  margin: 0 0 1.25rem;
+}
+
+.about-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+}
+
+.about-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 999px;
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.about-steps {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.about-steps li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.about-steps__num {
+  font-weight: 800;
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.about-section {
+  margin-bottom: 2.5rem;
+}
+
+.about-section > h2 {
+  font-size: 1.4rem;
+  margin: 0 0 0.5rem;
+}
+
+.about-prose {
+  max-width: 68ch;
+  line-height: 1.7;
+  margin: 0 0 1.25rem;
+}
+
+.about-approach {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 640px) {
+  .about-approach {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-approach {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.about-approach li {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  padding: 0.8rem 0.95rem;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.about-approach strong {
+  font-size: 0.95rem;
+}
+
+.about-approach span {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.about-cards {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 900px) {
+  .about-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.about-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-accent);
+  border-radius: 12px;
+  background: var(--color-bg);
+  padding: 1.15rem 1.15rem 1.25rem;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.about-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.about-card h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+.about-card p {
+  margin: 0;
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+.about-card__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.about-card__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.about-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  white-space: nowrap;
+}
+
+.about-tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+}
+
+.about-api {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  display: grid;
+  gap: 0.2rem;
+  line-height: 1.55;
+}
+
+.about-card__meta {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.about-card__action {
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+
+.about-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.about-link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+.about-link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.about-tech {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 720px) {
+  .about-tech {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.about-tech__panel {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  padding: 1.1rem 1.2rem;
+}
+
+.about-tech__panel h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+}
+
+.about-tech__panel ul {
+  margin: 0;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.93rem;
+}
+
+.about-note {
+  margin: 0.9rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  max-width: 68ch;
+}
+
+.about-closing {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  padding: 1.75rem 1.5rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.about-closing h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+}
+
+.about-closing p {
+  margin: 0 auto 1.25rem;
+  max-width: 58ch;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+}
+
+.about-closing .button-row {
+  justify-content: center;
+}
+
+.about-closing .button {
+  text-decoration: none;
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-card {
+    transition: none;
+  }
+
+  .about-card:hover {
+    transform: none;
+    box-shadow: none;
   }
 }
