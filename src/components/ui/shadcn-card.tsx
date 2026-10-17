@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { cn } from '../../lib/utils';
 
 /**
@@ -15,6 +15,10 @@ import { cn } from '../../lib/utils';
 
 type CardDivProps = HTMLAttributes<HTMLDivElement>;
 
+type CardTitleProps = HTMLAttributes<HTMLHeadingElement> & {
+  children: ReactNode;
+};
+
 export function Card({ className, ...props }: CardDivProps) {
   return <article className={cn('products-card', className)} {...props} />;
 }
@@ -23,8 +27,12 @@ export function CardHeader({ className, ...props }: CardDivProps) {
   return <div className={cn('products-card__header', className)} {...props} />;
 }
 
-export function CardTitle({ className, ...props }: CardDivProps) {
-  return <h3 className={cn('products-card__title', className)} {...props} />;
+export function CardTitle({ className, children, ...props }: CardTitleProps) {
+  return (
+    <h3 className={cn('products-card__title', className)} {...props}>
+      {children}
+    </h3>
+  );
 }
 
 export function CardDescription({ className, ...props }: CardDivProps) {

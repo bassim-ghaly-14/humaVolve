@@ -191,8 +191,6 @@ ul {
 
 /* Showcase layout */
 .page__hero,
-.page__demo,
-.page__structure,
 .showcase {
   margin-bottom: 2rem;
 }
@@ -266,25 +264,14 @@ ul {
   margin: 0 0 1rem;
 }
 
-/* Assignment 01 foundation demo: vertical rhythm between the heading, the
- * Load example button, and the loading/empty state below it. Scoped to
- * .page__demo so shared .button/.skeleton/.empty-state are untouched. */
-.page__demo {
+/* About Assignment 02 live showcase wrapper: same spacing rhythm as .showcase. */
+.about-showcase {
   display: grid;
-  gap: 1rem;
-  justify-items: stretch;
+  gap: 0;
 }
 
-.page__demo h2 {
-  margin: 0;
-}
-
-.page__demo > .button {
-  justify-self: start;
-}
-
-.page__demo .skeleton {
-  margin-top: 0;
+.about-showcase .showcase:last-child {
+  margin-bottom: 0;
 }
 
 .card-grid {

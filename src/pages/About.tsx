@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, CircleCheck, Folder, Layers, ShoppingBag } from 'lucide-react';
+import { Assignment02Showcase } from '../components/about/Assignment02Showcase';
 import { ROUTES } from '../constants/routes';
 
 /** About page: workspace intro plus showcase of Assignments 01-03. */
@@ -46,9 +47,9 @@ export default function About() {
         <h2 id="about-overview">Project overview</h2>
         <p className="about-prose">
           The repository grows without restructuring. Each assignment lands in
-          the same codebase and reuses the foundation before it. Home still
-          shows the Assignment 02 component showcase, and Products builds on
-          the same typed-module conventions.
+          the same codebase and reuses the foundation before it. The
+          interactive Assignment 02 showcase lives below, and Products builds
+          on the same typed-module conventions.
         </p>
         <ul className="about-approach">
           <li>
@@ -127,8 +128,8 @@ export default function About() {
             <h3 id="about-a02">Reusable React Components</h3>
             <p>
               Added prop-driven <code>Button</code>, <code>Card</code>, and{' '}
-              <code>Table</code> components, shown on Home with course data.
-              The legacy APIs remain preserved and untouched.
+              <code>Table</code> components with course data. The legacy APIs
+              remain preserved and untouched.
             </p>
             <ul className="about-api" aria-label="Preserved component API">
               <li>
@@ -145,12 +146,12 @@ export default function About() {
               </li>
             </ul>
             <p className="about-card__meta">Completed · October 15, 2026</p>
-            <p className="about-card__action">
-              <Link className="about-link" to={ROUTES.HOME}>
-                View the component showcase
+            <div className="about-card__action">
+              <a className="about-link" href="#about-a02-live">
+                Skip to the live showcase
                 <ArrowRight aria-hidden="true" size={15} />
-              </Link>
-            </p>
+              </a>
+            </div>
           </article>
           <article className="about-card" aria-labelledby="about-a03">
             <div className="about-card__top">
@@ -200,6 +201,14 @@ export default function About() {
           </article>
         </div>
       </section>
+      <section className="about-section" aria-labelledby="about-a02-live">
+        <h2 id="about-a02-live">Assignment 02 — Live showcase</h2>
+        <p className="about-prose">
+          The same reusable Button, Card, and Table components, demonstrated
+          with course data. State stays local to this showcase.
+        </p>
+        <Assignment02Showcase />
+      </section>
       <section className="about-section" aria-labelledby="about-tech">
         <h2 id="about-tech">Technology overview</h2>
         <p className="about-prose">
@@ -235,14 +244,14 @@ export default function About() {
         <h2 id="about-next">Keep exploring the workspace</h2>
         <p>
           HumaVolve grows one focused assignment at a time. See the latest
-          work in the catalog, or revisit the showcase on Home.
+          work in the catalog, or start from the landing page.
         </p>
         <div className="button-row">
           <Link className="button button--primary" to={ROUTES.PRODUCTS}>
             Browse products
           </Link>
           <Link className="button button--secondary" to={ROUTES.HOME}>
-            Component showcase
+            Back to home
           </Link>
         </div>
       </section>
