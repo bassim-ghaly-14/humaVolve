@@ -33,7 +33,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies (lockfile)
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Build (type-check + vite build)
         run: npm run build
