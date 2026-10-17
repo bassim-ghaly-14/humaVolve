@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, CircleCheck, Folder, Layers, ShoppingBag } from 'lucide-react';
 import { Assignment02Showcase } from '../components/about/Assignment02Showcase';
+import { LoomSessionsSection } from '../components/about/LoomSessionsSection';
 import { AssignmentSubmissionSection } from '../components/about/AssignmentSubmissionSection';
 import { ROUTES } from '../constants/routes';
 
@@ -256,6 +257,7 @@ export default function About() {
           </Link>
         </div>
       </section>
+      <LoomSessionsSection />
       <AssignmentSubmissionSection />
     </main>
   );
