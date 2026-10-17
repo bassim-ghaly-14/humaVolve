@@ -28,6 +28,7 @@ internationalization, assets, schemas, and utilities.
 | ---- | ----------------------- | --------- | --------------- |
 | 01   | React Project Structure | Completed | October 14, 2026 |
 | 02   | Reusable Components in React | Completed | October 15, 2026 |
+| 03   | Products Page | Completed | October 17, 2026 |
 
 **Task 01 — React Project Structure** was completed on October 14, 2026. The
 task established the initial React and TypeScript workspace using Vite and
@@ -82,6 +83,92 @@ Demonstration (`src/pages/Home.tsx`, sample data in `src/data/courses.ts`):
 
 Verification (run October 16, 2026): `npm run build` passed (`tsc -b` +
 Vite build, 27 modules); `npm run lint` passed with no errors.
+
+**Assignment 03 — Products Page** was completed on October 17, 2026.
+
+Objective: build a production-quality Products experience on the DummyJSON
+API using TanStack React Query for server state, a shadcn/ui-style Card
+composition, and Tailwind CSS v4 — with listing, API search, server-driven
+pagination, and a details route.
+
+Implemented features:
+
+- Products listing at `/products` with a `Products` page heading, responsive
+  1/2/3-column grid, result count summary, and accessible loading, error
+  (with Retry), and empty states (reusing `LoadingSkeleton`, `EmptyState`,
+  and the existing `Button`).
+- Server-side search via `/products/search?q=...`: trimmed query, 350 ms
+  debounce through the existing `useDebounce`, input stays responsive,
+  pagination resets to page 0 when the effective query changes, empty search
+  falls back to the plain listing endpoint, no-match shows a friendly empty
+  state with Clear search.
+- Server-driven pagination: `limit=10`, `skip = page * limit`, only the
+  current page is fetched, total pages derived from the API `total`,
+  Previous/Next plus compact page numbers, disabled boundaries,
+  keyboard/screen-reader accessible (`nav[aria-label]`, `aria-current`).
+- Product details at `/products/:id`: route id validated (`/^\d+$/`),
+  dedicated detail query, image/title/description/price/rating/category plus
+  brand/discount/availability/stock when present, Back to products link,
+  loading/error/invalid-id states.
+- Product cards on the shadcn-style `Card` composition with thumbnail (with
+  fallback image on load failure), title (2-line clamp), price via
+  `Intl.NumberFormat` USD, rating with a `lucide-react` star, brand/category,
+  and a View details link.
+
+Technology used: `@tanstack/react-query@^5`, `react-router-dom@^7`
+(`HashRouter` for GitHub Pages deep-link safety), `tailwindcss@^4` +
+`@tailwindcss/vite`, `lucide-react` (search/star/back icons only). The legacy
+Assignment 02 `Card.tsx` is untouched; Products uses the new
+`src/components/ui/shadcn-card.tsx`. Tailwind v4 is layered via
+`@import "tailwindcss"` plus an `@theme` token map; all Assignment 01/02 CSS
+rules are preserved and Products styles are appended.
+
+API endpoints (`https://dummyjson.com/products`):
+
+- `GET /products?limit=10&skip=0` — listing/pagination.
+- `GET /products/search?q=phone&limit=10&skip=0` — search.
+- `GET /products/1` — details.
+
+React Query and query-key strategy: single shared `QueryClient` in
+`AppProvider` (`staleTime` 30 s, `gcTime` 5 min, `retry: 1`,
+`refetchOnWindowFocus: false`). Keys: `['products','list',
+{ search, page, limit }]` and `['products','detail', productId]`. Listing
+uses `placeholderData: keepPreviousData` so the previous page stays visible
+while fetching (`isFetching` shows `Updating…`; initial load shows the
+skeleton only when no cached rows exist). Verified live against DummyJSON
+with `curl`: listing, `q=phone` search, and `/products/1` all return the
+expected shapes.
+
+Search and pagination behavior: typing debounces 350 ms, trims whitespace,
+resets to page 0 on the effective query change via render-phase adjustment
+(no `setState`-in-effect), keeps the query while paging, clamps to the last
+valid page when totals shrink. `skip = pageIndex * limit`, `totalPages =
+ceil(total / limit)`, zero results render the empty state without pagination.
+
+Routing: `/products`, `/products/:id`, `/` (Home, Assignment 02 showcase
+intact), `/about`, `*` redirects to `/products`. Hash URLs
+(`#/products`, `#/products/1`) so refresh/deep-link works on GitHub Pages
+with the existing `base: '/humaVolve/'`; no deployment settings changed.
+
+Relevant files: `src/api/products.api.ts`, `src/types/product.types.ts`,
+`src/schemas/product.schema.ts`, `src/hooks/useProducts.ts`,
+`src/pages/Products.tsx`, `src/pages/ProductDetails.tsx`,
+`src/components/products/ProductCard.tsx`,
+`src/components/products/ProductsPagination.tsx`,
+`src/components/ui/shadcn-card.tsx`, `src/lib/utils.ts`,
+`src/utils/formatPrice.ts`, plus minimal edits to `src/App.tsx`,
+`src/components/layout/Navbar.tsx`, `src/constants/routes.ts`,
+`src/components/providers/AppProvider.tsx`, `vite.config.ts`,
+`src/index.css`, `package.json`.
+
+Commands: `npm install`, `npm run dev`, `npm run build` (`tsc -b` + Vite),
+`npm run lint`, `npm run preview`. No test runner exists in this repo.
+
+Verification (run October 17, 2026): `npm run build` passed (`tsc -b` + Vite
+build, 1997 modules); `npm run lint` passed with no errors; DummyJSON
+listing/search/detail endpoints verified live via `curl`. Browser and
+responsive checks were code-reviewed (grid breakpoints, clamp, image
+fallback) but not visually exercised in a browser here.
 
 ## Tech Stack
 
