@@ -295,6 +295,18 @@ These scripts are defined in `package.json`:
 | `npm run preview` | Locally preview the production build.                |
 | `npm run lint`    | Run ESLint across the project.                       |
 
+## Deployment
+
+Production deploys automatically: every push to `master` triggers the
+`Deploy to GitHub Pages` workflow (`.github/workflows/deploy.yml`), which
+runs `npm ci` + `npm run build` and publishes `dist/` to the `gh-pages`
+branch. Live URL: https://bassim-ghaly-14.github.io/humaVolve/
+
+Feature branches and pull requests never publish to production. A failed
+build cannot replace the live site — the publish step runs only if the
+build succeeds. To inspect a failed run: GitHub → Actions → the failed
+`Deploy to GitHub Pages` run → open the failing step's logs.
+
 
 ## Implementation Notes
 

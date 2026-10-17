@@ -1,0 +1,49 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Minimal permissions: checkout + build need read, publishing dist/ to
+# the gh-pages branch needs write. No PAT or extra secrets required.
+permissions:
+  contents: write
+
+# If several commits land on master in quick succession, cancel the stale
+# in-progress run so the newest successful build is what ends up on
+# gh-pages. Safe because the build is idempotent and the gh-pages push is
+# atomic. Publishing to gh-pages does NOT re-trigger this workflow because
+# the trigger is limited to the master branch, so there is no deploy loop.
+concurrency:
+  group: deploy-gh-pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies (lockfile)
+        run: npm ci
+
+      - name: Build (type-check + vite build)
+        run: npm run build
+
+      - name: Publish dist/ to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./dist
+          # Keep existing Pages URL and Vite base '/humaVolve/' untouched.
+          # Only the fresh dist/ output is published; source history on
+          # master is never rewritten.
