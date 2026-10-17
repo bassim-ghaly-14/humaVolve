@@ -1,18 +1,26 @@
 import type { ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export interface AppProviderProps {
   children: ReactNode;
 }
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      gcTime: 5 * 60_000,
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 /**
- * Lightweight top-level provider.
- *
- * Today it only forwards its children, giving the application a single,
- * well-known composition root. When cross-cutting concerns are needed later
- * (theme, i18n, query clients, and so on) they can be layered in here without
- * changing the component tree in `main.tsx`. No Context or state library is
- * introduced until one is genuinely required.
+ * Top-level provider composition root.
+ * Provides the single shared TanStack Query client to the whole app.
  */
 export function AppProvider({ children }: AppProviderProps) {
-  return <>{children}</>;
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
+
