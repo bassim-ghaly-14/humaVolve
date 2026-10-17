@@ -114,18 +114,97 @@ ul {
 .navbar__links {
   list-style: none;
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 0.25rem;
   margin: 0;
   padding: 0;
 }
 
-.navbar__links a {
+.navbar__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
   color: var(--color-text-muted);
   text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease;
 }
 
-.navbar__links a:hover {
+.navbar__link::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0.8rem;
+  inset-block-end: 0.3rem;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 180ms ease;
+}
+
+.navbar__link:hover {
   color: var(--color-accent);
+  background: var(--color-surface);
+}
+
+.navbar__link:hover::after {
+  transform: scaleX(0.6);
+  opacity: 0.7;
+}
+
+.navbar__link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.navbar__link.is-active {
+  color: var(--color-accent-hover);
+  background: rgba(100, 108, 255, 0.12);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+
+.navbar__link.is-active::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .navbar__link.is-active {
+    color: #a5b0ff;
+    background: rgba(100, 108, 255, 0.22);
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar__inner {
+    gap: 0.5rem 0.75rem;
+  }
+
+  .navbar__links {
+    gap: 0.15rem;
+  }
+
+  .navbar__link {
+    min-height: 2.5rem;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar__link,
+  .navbar__link::after {
+    transition: none;
+  }
 }
 
 /* Footer */
@@ -988,5 +1067,126 @@ ul {
   .about-card:hover {
     transform: none;
     box-shadow: none;
+  }
+}
+
+/* About responsive repair (appended; existing rules above untouched).
+ * Root causes addressed:
+ * - grid/flex children without min-width: 0 could not shrink past
+ *   long content (badges, code, table) on narrow viewports;
+ * - inline code / long tokens had no wrapping, forcing cards wider;
+ * - mobile padding on closing panel + page gutters left <300px
+ *   usable at 320px viewports;
+ * - showcase table (min-width: 480px) is intentionally scrollable,
+ *   but its ancestors needed bounded widths so the scroll stays local.
+ * No blanket overflow-x clipping is used; the table keeps its own
+ * contained horizontal scroll.
+ */
+.about,
+.about-hero,
+.about-section,
+.about-meta,
+.about-approach,
+.about-approach li,
+.about-cards,
+.about-card,
+.about-card__top,
+.about-tech,
+.about-tech__panel,
+.about-closing,
+.about-showcase,
+.about-showcase .showcase,
+.card-grid,
+.card-grid .card {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.about-card p,
+.about-prose,
+.about-lede,
+.about-note,
+.about-tech__panel li,
+.about-approach span,
+.showcase__intro,
+.card__description,
+.card__meta,
+.status {
+  overflow-wrap: break-word;
+}
+
+.about code,
+.about-api code,
+.showcase code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.about-api {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.about img,
+.about video,
+.about iframe,
+.card__image {
+  max-width: 100%;
+  height: auto;
+}
+
+.about-showcase .table-wrapper {
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.about-showcase .status {
+  max-width: 100%;
+}
+
+.about-card__kicker,
+.about-status {
+  max-width: 100%;
+}
+
+.about-status {
+  flex-shrink: 1;
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 1rem 0.75rem;
+  }
+
+  .about-hero {
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .about-lede {
+    font-size: 1rem;
+  }
+
+  .about-section {
+    margin-bottom: 1.75rem;
+  }
+
+  .about-card {
+    padding: 1rem 0.9rem 1.1rem;
+  }
+
+  .about-closing {
+    padding: 1.25rem 1rem;
+  }
+
+  .about-closing .button-row .button,
+  .about-closing .button-row a.button {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+
+  .about-showcase .button-row .button {
+    flex: 1 1 auto;
+    min-height: 2.75rem;
   }
 }
