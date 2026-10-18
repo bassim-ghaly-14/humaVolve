@@ -1,10 +1,9 @@
 import { useMemo, useState } from 'react';
-import { ShoppingCart } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { EmptyState } from '../components/common/EmptyState';
 import { LoadingSkeleton } from '../components/skeleton/LoadingSkeleton';
 import { Button } from '../components/ui/Button';
-import { ShopHero } from '../components/shop/ShopHero';
+import { HumaVolveHero } from '../components/humavolve/HumaVolveHero';
 import { ShopFilters } from '../components/shop/ShopFilters';
 import { ShopCard } from '../components/shop/ShopCard';
 import { ShopCartDrawer, type CartLine } from '../components/shop/ShopCartDrawer';
@@ -30,18 +29,25 @@ function addLine(lines: CartLine[], product: Product): CartLine[] {
 }
 
 /**
- * Products / Shop page — pixel-faithful recreation of the reference:
- * compact shop nav, bordered hero, category pills, 4-column luxury grid.
- * All styles are scoped `.shop-*` classes so other pages are unaffected.
- * Data is the curated DummyJSON beauty subset (beauty + skin-care +
- * fragrances); no product photography is fabricated.
+ * Shop page — HumaVolveHero kept at the top (moved from HumaVolve);
+ * original Shop content (filters, product grid, pagination, status states)
+ * restored beneath it. The standalone in-page Cart button stays removed;
+ * the shared navbar's View Cart link (`/shop?cart=open`) opens the drawer.
  */
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [category, setCategory] = useState<ShopCategoryKey>('all');
   const [page, setPage] = useState(0);
   const [cartLines, setCartLines] = useState<CartLine[]>([]);
-  const [cartOpen, setCartOpen] = useState(false);
+
+  // VIEW CART destination: the navbar links to /shop?cart=open, which opens
+  // this existing drawer. Closing removes the param so refresh stays clean.
+  const drawerOpen = searchParams.get('cart') === 'open';
+  const closeCart = (): void => {
+    const params = new URLSearchParams(searchParams);
+    params.delete('cart');
+    setSearchParams(params, { replace: true });
+  };
 
   // Single search interface: the navbar input owns the URL `search` parameter
   // and this page reads it, so there is no duplicated search state.
@@ -90,19 +96,9 @@ export default function Products() {
   const showInitialLoading = isLoading && products.length === 0;
 
   return (
-    <main className="shop-page" aria-labelledby="shop-heading">
+    <main className="shop-page" aria-labelledby="hv-hero-heading">
       <div className="shop-shell">
-        <div className="shop-cart__trigger">
-          <button
-            type="button"
-            className="shop-cart__toggle"
-            onClick={() => setCartOpen(true)}
-            aria-label="View cart"
-          >
-            <ShoppingCart size={11} aria-hidden="true" />
-          </button>
-        </div>
-        <ShopHero />
+        <HumaVolveHero />
         <ShopFilters active={category} onChange={(key) => setCategory(key)} />
 
         {showInitialLoading ? (
@@ -157,9 +153,9 @@ export default function Products() {
       </div>
 
       <ShopCartDrawer
-        open={cartOpen}
+        open={drawerOpen}
         lines={cartLines}
-        onClose={() => setCartOpen(false)}
+        onClose={closeCart}
         onRemove={(id) => setCartLines((lines) => lines.filter((line) => line.product.id !== id))}
         onClear={() => setCartLines([])}
       />

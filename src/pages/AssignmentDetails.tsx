@@ -1,10 +1,10 @@
-import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
-import { getAssignmentById, type FolderNode } from '../data/assignments';
-import { ROUTES } from '../constants/routes';
-import { EmptyState } from '../components/common/EmptyState';
-import { AssignmentSubmissionSection } from '../components/about/AssignmentSubmissionSection';
-import { Assignment02Showcase } from '../components/about/Assignment02Showcase';
+import { Link, useParams } from "react-router-dom";
+import { ArrowLeft, ExternalLink } from "lucide-react";
+import { getAssignmentById, type FolderNode } from "../data/assignments";
+import { ROUTES } from "../constants/routes";
+import { EmptyState } from "../components/common/EmptyState";
+import { AssignmentSubmissionSection } from "../components/about/AssignmentSubmissionSection";
+import { Assignment02Showcase } from "../components/about/Assignment02Showcase";
 
 function FolderTree({ nodes }: { nodes: FolderNode[] }) {
   return (
@@ -26,19 +26,20 @@ export default function AssignmentDetails() {
 
   if (!assignment) {
     return (
-      <main className="page page--wide about" aria-labelledby="assignment-missing">
+      <main
+        className="page page--wide about"
+        aria-labelledby="assignment-missing">
         <Link className="products-back" to={ROUTES.HUMAVOLVE}>
           <ArrowLeft aria-hidden="true" size={16} /> Back to assignments
         </Link>
         <EmptyState
           title="Assignment not found"
-          description={`“${id ?? ''}” does not match a known assignment. Return to the list and choose an assignment.`}
+          description={`“${id ?? ""}” does not match a known assignment. Return to the list and choose an assignment.`}
           action={
             <Link
               className="button button--secondary"
               to={ROUTES.HUMAVOLVE}
-              id="assignment-missing"
-            >
+              id="assignment-missing">
               Browse assignments
             </Link>
           }
@@ -48,13 +49,15 @@ export default function AssignmentDetails() {
   }
 
   return (
-    <main className="page page--wide about task-details" aria-labelledby="task-details-title">
+    <main
+      className="page page--wide about task-details"
+      aria-labelledby="task-details-title">
       <Link className="products-back" to={ROUTES.HUMAVOLVE}>
         <ArrowLeft aria-hidden="true" size={16} /> Back to assignments
       </Link>
 
       <p className="eyebrow">
-        {assignment.course ? `${assignment.course} · ` : ''}
+        {assignment.course ? `${assignment.course} · ` : ""}
         {assignment.taskLabel} · {assignment.category}
       </p>
       <h1 id="task-details-title">{assignment.title}</h1>
@@ -79,8 +82,7 @@ export default function AssignmentDetails() {
               className="about-link"
               href={assignment.figmaUrl}
               target="_blank"
-              rel="noopener noreferrer"
-            >
+              rel="noopener noreferrer">
               Open Figma design <ExternalLink aria-hidden="true" size={15} />
             </a>
           </p>
@@ -173,8 +175,7 @@ export default function AssignmentDetails() {
             <section
               key={component.title}
               className="about-section"
-              aria-labelledby={`task-component-${assignment.id}-${index}`}
-            >
+              aria-labelledby={`task-component-${assignment.id}-${index}`}>
               <h2 id={`task-component-${assignment.id}-${index}`}>
                 {index + 1}. {component.title}
               </h2>
@@ -183,7 +184,7 @@ export default function AssignmentDetails() {
                 {component.props.map((prop) => (
                   <li key={prop.name}>
                     <code>{prop.name}</code>
-                    {' — '}
+                    {" — "}
                     {prop.description}
                   </li>
                 ))}
@@ -194,9 +195,9 @@ export default function AssignmentDetails() {
               </p>
             </section>
           ))
-        : null})
+        : null}
 
-      {assignment.id === '02' && (
+      {assignment.id === "02" && (
         <section className="about-section" aria-labelledby="task-live-showcase">
           <h2 id="task-live-showcase">Live Component Showcase</h2>
           <p className="about-prose">
@@ -212,8 +213,8 @@ export default function AssignmentDetails() {
         <section className="about-section" aria-labelledby="task-endpoints">
           <h2 id="task-endpoints">API Endpoints</h2>
           <p className="about-prose">
-            DummyJSON endpoints used by this assignment. URLs wrap so they
-            stay readable on mobile.
+            DummyJSON endpoints used by this assignment. URLs wrap so they stay
+            readable on mobile.
           </p>
           {assignment.endpoints.map(({ purpose, endpoint }) => (
             <p className="task-url" key={purpose}>
@@ -222,8 +223,7 @@ export default function AssignmentDetails() {
                 className="about-link"
                 href={endpoint}
                 target="_blank"
-                rel="noopener noreferrer"
-              >
+                rel="noopener noreferrer">
                 <code>{endpoint}</code>
               </a>
             </p>
@@ -234,8 +234,7 @@ export default function AssignmentDetails() {
       {assignment.expectedStructure?.length ? (
         <section
           className="about-section"
-          aria-labelledby="task-page-structure"
-        >
+          aria-labelledby="task-page-structure">
           <h2 id="task-page-structure">Expected Page Structure</h2>
           <ul className="task-list">
             {assignment.expectedStructure.map((item) => (
@@ -246,10 +245,7 @@ export default function AssignmentDetails() {
       ) : null}
 
       {assignment.reactQueryExpectations?.length ? (
-        <section
-          className="about-section"
-          aria-labelledby="task-react-query"
-        >
+        <section className="about-section" aria-labelledby="task-react-query">
           <h2 id="task-react-query">React Query Expectations</h2>
           <ul className="task-list">
             {assignment.reactQueryExpectations.map((expectation) => (
@@ -273,8 +269,7 @@ export default function AssignmentDetails() {
       {assignment.submissionRequirements?.length ? (
         <section
           className="about-section"
-          aria-labelledby="task-submission-requirements"
-        >
+          aria-labelledby="task-submission-requirements">
           <h2 id="task-submission-requirements">Submission Requirements</h2>
           <ul className="task-list">
             {assignment.submissionRequirements.map((requirement) => (

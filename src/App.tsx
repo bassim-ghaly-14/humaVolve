@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import HumaVolve from './pages/HumaVolve';
 import AssignmentDetails from './pages/AssignmentDetails';
 import About from './pages/About';
+import Collections from './pages/Collections';
+import Contact from './pages/Contact';
 import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
 import { ROUTES } from './constants/routes';
@@ -13,6 +15,7 @@ import { ROUTES } from './constants/routes';
 /**
  * Root application composition.
  * HashRouter keeps deep links working on GitHub Pages without a 404 fallback.
+ * /shop is the canonical storefront; /products is a legacy alias.
  */
 function App() {
   return (
@@ -20,13 +23,16 @@ function App() {
       <HashRouter>
         <Navbar />
         <Routes>
+          <Route path={ROUTES.SHOP} element={<Products />} />
           <Route path={ROUTES.PRODUCTS} element={<Products />} />
           <Route path={ROUTES.PRODUCT_DETAIL_PATTERN} element={<ProductDetails />} />
           <Route path={ROUTES.ASSIGNMENT_DETAIL_PATTERN} element={<AssignmentDetails />} />
+          <Route path={ROUTES.COLLECTIONS} element={<Collections />} />
+          <Route path={ROUTES.CONTACT} element={<Contact />} />
           <Route path={ROUTES.HOME} element={<Home />} />
           <Route path={ROUTES.HUMAVOLVE} element={<HumaVolve />} />
           <Route path={ROUTES.ABOUT} element={<About />} />
-          <Route path="*" element={<Navigate to={ROUTES.PRODUCTS} replace />} />
+          <Route path="*" element={<Navigate to={ROUTES.SHOP} replace />} />
         </Routes>
         <AcademyLauncher />
       </HashRouter>

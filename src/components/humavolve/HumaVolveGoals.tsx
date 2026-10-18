@@ -44,7 +44,7 @@ export function HumaVolveGoals() {
             <ul>
               <li>React 19 with TypeScript</li>
               <li>Vite builds and dev server</li>
-              <li>Hand-written CSS with dark mode</li>
+              <li>Hand-written light-only CSS</li>
               <li>ESLint verification</li>
             </ul>
           </div>

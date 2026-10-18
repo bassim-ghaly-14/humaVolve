@@ -38,6 +38,42 @@ export async function fetchProducts(
   return payload;
 }
 
+/** Fetch one page of a single category: GET /products/category/:slug */
+export async function fetchProductsByCategory(
+  slug: string,
+  params: ProductListParams,
+): Promise<ProductsResponse> {
+  const url = new URL(`${PRODUCTS_BASE_URL}/category/${encodeURIComponent(slug)}`);
+  url.searchParams.set('limit', String(params.limit));
+  url.searchParams.set('skip', String(params.skip));
+  const response = await fetch(url.toString());
+  const payload: unknown = await parseJsonResponse(response);
+  if (!isProductsResponse(payload)) {
+    throw new Error('Received an unexpected products payload.');
+  }
+  return payload;
+}
+
+/** Fetch several categories and merge them client-side (stable id order). */
+export async function fetchProductsByCategories(
+  slugs: string[],
+  params: ProductListParams,
+): Promise<ProductsResponse> {
+  if (slugs.length === 1) return fetchProductsByCategory(slugs[0], params);
+  const pages = await Promise.all(
+    slugs.map((slug) =>
+      // Request the full category slice; DummyJSON beauty categories are tiny.
+      fetchProductsByCategory(slug, { limit: 100, skip: 0 }),
+    ),
+  );
+  const merged = pages
+    .flatMap((page) => page.products)
+    .sort((a, b) => a.id - b.id);
+  const total = merged.length;
+  const paged = merged.slice(params.skip, params.skip + params.limit);
+  return { products: paged, total, skip: params.skip, limit: params.limit };
+}
+
 /** Search products by keyword: GET /products/search?q=&limit=&skip= */
 export async function searchProducts(
   params: ProductSearchParams,
