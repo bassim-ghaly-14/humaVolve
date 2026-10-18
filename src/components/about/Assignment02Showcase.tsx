@@ -20,7 +20,8 @@ const DEFAULT_STATUS = 'No button clicked yet. Try the showcase below.';
 /**
  * Interactive Assignment 02 showcase (Button, Card, Table).
  * Local state only: status announcement, shared card demo state.
- * Rendered on About; Home no longer hosts this demonstration.
+ * Rendered on the Assignment 02 details page; no longer hosted on the
+ * HumaVolve landing page.
  */
 export function Assignment02Showcase() {
   const [buttonStatus, setButtonStatus] = useState(DEFAULT_STATUS);
