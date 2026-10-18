@@ -1,8 +1,10 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppProvider } from './components/providers/AppProvider';
 import { Navbar } from './components/layout/Navbar';
-import { Footer } from './components/layout/Footer';
+import { AcademyLauncher } from './components/academy/AcademyLauncher';
 import Home from './pages/Home';
+import HumaVolve from './pages/HumaVolve';
+import AssignmentDetails from './pages/AssignmentDetails';
 import About from './pages/About';
 import Products from './pages/Products';
 import ProductDetails from './pages/ProductDetails';
@@ -20,11 +22,13 @@ function App() {
         <Routes>
           <Route path={ROUTES.PRODUCTS} element={<Products />} />
           <Route path={ROUTES.PRODUCT_DETAIL_PATTERN} element={<ProductDetails />} />
+          <Route path={ROUTES.ASSIGNMENT_DETAIL_PATTERN} element={<AssignmentDetails />} />
           <Route path={ROUTES.HOME} element={<Home />} />
+          <Route path={ROUTES.HUMAVOLVE} element={<HumaVolve />} />
           <Route path={ROUTES.ABOUT} element={<About />} />
           <Route path="*" element={<Navigate to={ROUTES.PRODUCTS} replace />} />
         </Routes>
-        <Footer />
+        <AcademyLauncher />
       </HashRouter>
     </AppProvider>
   );
