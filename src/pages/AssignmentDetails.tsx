@@ -19,55 +19,36 @@ function FolderTree({ nodes }: { nodes: FolderNode[] }) {
   );
 }
 
-/** Dedicated details page for a single assignment (Tasks 01-02 share one layout). */
-export default function AssignmentDetails() {
-  const { id } = useParams<{ id: string }>();
-  const assignment = getAssignmentById(id);
-
-  if (!assignment) {
-    return (
-      <main
-        className="page page--wide about"
-        aria-labelledby="assignment-missing">
-        <Link className="products-back" to={ROUTES.HUMAVOLVE}>
-          <ArrowLeft aria-hidden="true" size={16} /> Back to assignments
-        </Link>
-        <EmptyState
-          title="Assignment not found"
-          description={`“${id ?? ""}” does not match a known assignment. Return to the list and choose an assignment.`}
-          action={
-            <Link
-              className="button button--secondary"
-              to={ROUTES.HUMAVOLVE}
-              id="assignment-missing">
-              Browse assignments
-            </Link>
-          }
-        />
-      </main>
-    );
-  }
+function TaskListSection({
+  id,
+  title,
+  items,
+}: {
+  id: string;
+  title: string;
+  items: string[];
+}) {
+  if (items.length === 0) return null;
 
   return (
-    <main
-      className="page page--wide about task-details"
-      aria-labelledby="task-details-title">
-      <Link className="products-back" to={ROUTES.HUMAVOLVE}>
-        <ArrowLeft aria-hidden="true" size={16} /> Back to assignments
-      </Link>
+    <section className="about-section" aria-labelledby={id}>
+      <h2 id={id}>{title}</h2>
+      <ul className="task-list">
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
-      <p className="eyebrow">
-        {assignment.course ? `${assignment.course} · ` : ""}
-        {assignment.taskLabel} · {assignment.category}
-      </p>
-      <h1 id="task-details-title">{assignment.title}</h1>
-      <p className="about-prose">{assignment.intro}</p>
-
-      <section className="about-section" aria-labelledby="task-objective">
-        <h2 id="task-objective">Objective</h2>
-        <p className="about-prose">{assignment.objective}</p>
-      </section>
-
+function AssignmentDetailsSections({
+  assignment,
+}: {
+  assignment: NonNullable<ReturnType<typeof getAssignmentById>>;
+}) {
+  return (
+    <>
       {assignment.figmaUrl ? (
         <section className="about-section" aria-labelledby="task-figma">
           <h2 id="task-figma">Figma Design</h2>
@@ -94,25 +75,19 @@ export default function AssignmentDetails() {
       ) : null}
 
       {assignment.technologies?.length ? (
-        <section className="about-section" aria-labelledby="task-technologies">
-          <h2 id="task-technologies">Required Technologies</h2>
-          <ul className="task-list">
-            {assignment.technologies.map((technology) => (
-              <li key={technology}>{technology}</li>
-            ))}
-          </ul>
-        </section>
+        <TaskListSection
+          id="task-technologies"
+          title="Required Technologies"
+          items={assignment.technologies}
+        />
       ) : null}
 
       {assignment.requirements ? (
-        <section className="about-section" aria-labelledby="task-requirements">
-          <h2 id="task-requirements">Task Requirements</h2>
-          <ul className="task-list">
-            {assignment.requirements.map((requirement) => (
-              <li key={requirement}>{requirement}</li>
-            ))}
-          </ul>
-        </section>
+        <TaskListSection
+          id="task-requirements"
+          title="Task Requirements"
+          items={assignment.requirements}
+        />
       ) : null}
 
       {assignment.folderTree ? (
@@ -160,14 +135,11 @@ export default function AssignmentDetails() {
       ) : null}
 
       {assignment.notes ? (
-        <section className="about-section" aria-labelledby="task-notes">
-          <h2 id="task-notes">Important Notes</h2>
-          <ul className="task-list">
-            {assignment.notes.map((note) => (
-              <li key={note}>{note}</li>
-            ))}
-          </ul>
-        </section>
+        <TaskListSection
+          id="task-notes"
+          title="Important Notes"
+          items={assignment.notes}
+        />
       ) : null}
 
       {assignment.componentSections
@@ -232,62 +204,43 @@ export default function AssignmentDetails() {
       ) : null}
 
       {assignment.expectedStructure?.length ? (
-        <section
-          className="about-section"
-          aria-labelledby="task-page-structure">
-          <h2 id="task-page-structure">Expected Page Structure</h2>
-          <ul className="task-list">
-            {assignment.expectedStructure.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </section>
+        <TaskListSection
+          id="task-page-structure"
+          title="Expected Page Structure"
+          items={assignment.expectedStructure}
+        />
       ) : null}
 
       {assignment.reactQueryExpectations?.length ? (
-        <section className="about-section" aria-labelledby="task-react-query">
-          <h2 id="task-react-query">React Query Expectations</h2>
-          <ul className="task-list">
-            {assignment.reactQueryExpectations.map((expectation) => (
-              <li key={expectation}>{expectation}</li>
-            ))}
-          </ul>
-        </section>
+        <TaskListSection
+          id="task-react-query"
+          title="React Query Expectations"
+          items={assignment.reactQueryExpectations}
+        />
       ) : null}
 
       {assignment.restrictions?.length ? (
-        <section className="about-section" aria-labelledby="task-restrictions">
-          <h2 id="task-restrictions">Important Restrictions</h2>
-          <ul className="task-list">
-            {assignment.restrictions.map((restriction) => (
-              <li key={restriction}>{restriction}</li>
-            ))}
-          </ul>
-        </section>
+        <TaskListSection
+          id="task-restrictions"
+          title="Important Restrictions"
+          items={assignment.restrictions}
+        />
       ) : null}
 
       {assignment.submissionRequirements?.length ? (
-        <section
-          className="about-section"
-          aria-labelledby="task-submission-requirements">
-          <h2 id="task-submission-requirements">Submission Requirements</h2>
-          <ul className="task-list">
-            {assignment.submissionRequirements.map((requirement) => (
-              <li key={requirement}>{requirement}</li>
-            ))}
-          </ul>
-        </section>
+        <TaskListSection
+          id="task-submission-requirements"
+          title="Submission Requirements"
+          items={assignment.submissionRequirements}
+        />
       ) : null}
 
       {assignment.generalRequirements ? (
-        <section className="about-section" aria-labelledby="task-general">
-          <h2 id="task-general">General Requirements</h2>
-          <ul className="task-list">
-            {assignment.generalRequirements.map((requirement) => (
-              <li key={requirement}>{requirement}</li>
-            ))}
-          </ul>
-        </section>
+        <TaskListSection
+          id="task-general"
+          title="General Requirements"
+          items={assignment.generalRequirements}
+        />
       ) : null}
 
       {assignment.closing ? (
@@ -295,6 +248,60 @@ export default function AssignmentDetails() {
           <span>{assignment.closing}</span>
         </p>
       ) : null}
+    </>
+  );
+}
+
+/** Dedicated details page for a single assignment (Tasks 01-02 share one layout). */
+export default function AssignmentDetails() {
+  const { id } = useParams<{ id: string }>();
+  const assignment = getAssignmentById(id);
+
+  if (!assignment) {
+    return (
+      <main
+        className="page page--wide about"
+        aria-labelledby="assignment-missing">
+        <Link className="products-back" to={ROUTES.HUMAVOLVE}>
+          <ArrowLeft aria-hidden="true" size={16} /> Back to assignments
+        </Link>
+        <EmptyState
+          title="Assignment not found"
+          description={`“${id ?? ""}” does not match a known assignment. Return to the list and choose an assignment.`}
+          action={
+            <Link
+              className="button button--secondary"
+              to={ROUTES.HUMAVOLVE}
+              id="assignment-missing">
+              Browse assignments
+            </Link>
+          }
+        />
+      </main>
+    );
+  }
+
+  return (
+    <main
+      className="page page--wide about task-details"
+      aria-labelledby="task-details-title">
+      <Link className="products-back" to={ROUTES.HUMAVOLVE}>
+        <ArrowLeft aria-hidden="true" size={16} /> Back to assignments
+      </Link>
+
+      <p className="eyebrow">
+        {assignment.course ? `${assignment.course} · ` : ""}
+        {assignment.taskLabel} · {assignment.category}
+      </p>
+      <h1 id="task-details-title">{assignment.title}</h1>
+      <p className="about-prose">{assignment.intro}</p>
+
+      <section className="about-section" aria-labelledby="task-objective">
+        <h2 id="task-objective">Objective</h2>
+        <p className="about-prose">{assignment.objective}</p>
+      </section>
+
+      <AssignmentDetailsSections assignment={assignment} />
 
       <AssignmentSubmissionSection assignment={assignment} />
     </main>
