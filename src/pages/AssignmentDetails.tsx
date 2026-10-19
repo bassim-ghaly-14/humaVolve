@@ -6,6 +6,8 @@ import { EmptyState } from "../components/common/EmptyState";
 import { AssignmentSubmissionSection } from "../components/about/AssignmentSubmissionSection";
 import { Assignment02Showcase } from "../components/about/Assignment02Showcase";
 
+type Assignment = NonNullable<ReturnType<typeof getAssignmentById>>;
+
 function FolderTree({ nodes }: { nodes: FolderNode[] }) {
   return (
     <ul className="task-tree">
@@ -42,37 +44,175 @@ function TaskListSection({
   );
 }
 
-function AssignmentDetailsSections({
-  assignment,
+function FigmaSection({ url }: { url: string }) {
+  return (
+    <section className="about-section" aria-labelledby="task-figma">
+      <h2 id="task-figma">Figma Design</h2>
+      <p className="about-prose">
+        The original design is linked below as an external Figma reference for
+        this task. It is provided for reference only and is not recreated or
+        fetched inside HumaVolve.
+      </p>
+      <p className="task-url">
+        <span>Design: </span>
+        <a
+          className="about-link"
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer">
+          Open Figma design <ExternalLink aria-hidden="true" size={15} />
+        </a>
+      </p>
+      <p className="task-url">
+        <span>URL: </span>
+        <code>{url}</code>
+      </p>
+    </section>
+  );
+}
+
+function FolderStructureSection({ nodes }: { nodes: FolderNode[] }) {
+  return (
+    <section className="about-section" aria-labelledby="task-structure">
+      <h2 id="task-structure">Required Folder Structure</h2>
+      <div className="task-tree-wrap">
+        <FolderTree nodes={nodes} />
+      </div>
+    </section>
+  );
+}
+
+function ExamplesSection({
+  examples,
 }: {
-  assignment: NonNullable<ReturnType<typeof getAssignmentById>>;
+  examples: NonNullable<Assignment["examples"]>;
 }) {
   return (
-    <>
-      {assignment.figmaUrl ? (
-        <section className="about-section" aria-labelledby="task-figma">
-          <h2 id="task-figma">Figma Design</h2>
-          <p className="about-prose">
-            The original design is linked below as an external Figma reference
-            for this task. It is provided for reference only and is not
-            recreated or fetched inside HumaVolve.
-          </p>
-          <p className="task-url">
-            <span>Design: </span>
-            <a
-              className="about-link"
-              href={assignment.figmaUrl}
-              target="_blank"
-              rel="noopener noreferrer">
-              Open Figma design <ExternalLink aria-hidden="true" size={15} />
-            </a>
-          </p>
-          <p className="task-url">
-            <span>URL: </span>
-            <code>{assignment.figmaUrl}</code>
-          </p>
-        </section>
+    <section className="about-section" aria-labelledby="task-examples">
+      <h2 id="task-examples">Suggested Examples</h2>
+      <dl className="task-examples">
+        {examples.map((example) => (
+          <div className="task-examples__row" key={example.path}>
+            <dt>
+              <code>{example.path}</code>
+            </dt>
+            <dd>
+              <code>{example.files}</code>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  );
+}
+
+function SubmissionStepsSection({ assignment }: { assignment: Assignment }) {
+  const { submissionSteps, submissionExampleUrl } = assignment;
+
+  if (!submissionSteps?.length) return null;
+
+  return (
+    <section className="about-section" aria-labelledby="task-github">
+      <h2 id="task-github">GitHub Submission Instructions</h2>
+      <ul className="task-list">
+        {submissionSteps.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ul>
+      {submissionExampleUrl ? (
+        <p className="task-url">
+          <span>Format: </span>
+          <code>{submissionExampleUrl}</code>
+        </p>
       ) : null}
+    </section>
+  );
+}
+
+function ComponentSections({ assignment }: { assignment: Assignment }) {
+  if (!assignment.componentSections?.length) return null;
+
+  return (
+    <>
+      {assignment.componentSections.map((component, index) => {
+        const sectionId = `task-component-${assignment.id}-${index}`;
+
+        return (
+          <section
+            key={component.title}
+            className="about-section"
+            aria-labelledby={sectionId}>
+            <h2 id={sectionId}>
+              {index + 1}. {component.title}
+            </h2>
+            <p className="about-prose">{component.intro}</p>
+            <ul className="task-list">
+              {component.props.map((prop) => (
+                <li key={prop.name}>
+                  <code>{prop.name}</code>
+                  {" — "}
+                  {prop.description}
+                </li>
+              ))}
+            </ul>
+            <p className="task-url">
+              <span>Requirement: </span>
+              {component.requirement}
+            </p>
+          </section>
+        );
+      })}
+    </>
+  );
+}
+
+function AssignmentEndpointsSection({
+  endpoints,
+}: {
+  endpoints: NonNullable<Assignment["endpoints"]>;
+}) {
+  if (endpoints.length === 0) return null;
+
+  return (
+    <section className="about-section" aria-labelledby="task-endpoints">
+      <h2 id="task-endpoints">API Endpoints</h2>
+      <p className="about-prose">
+        DummyJSON endpoints used by this assignment. URLs wrap so they stay
+        readable on mobile.
+      </p>
+      {endpoints.map(({ purpose, endpoint }) => (
+        <p className="task-url" key={purpose}>
+          <span>{purpose}: </span>
+          <a
+            className="about-link"
+            href={endpoint}
+            target="_blank"
+            rel="noopener noreferrer">
+            <code>{endpoint}</code>
+          </a>
+        </p>
+      ))}
+    </section>
+  );
+}
+
+function AssignmentShowcaseSection() {
+  return (
+    <section className="about-section" aria-labelledby="task-live-showcase">
+      <h2 id="task-live-showcase">Live Component Showcase</h2>
+      <p className="about-prose">
+        The Button, Card, and Table components described above are demonstrated
+        below. Interactivity and state stay local to this showcase.
+      </p>
+      <Assignment02Showcase />
+    </section>
+  );
+}
+
+function AssignmentDetailsSections({ assignment }: { assignment: Assignment }) {
+  return (
+    <>
+      {assignment.figmaUrl ? <FigmaSection url={assignment.figmaUrl} /> : null}
 
       {assignment.technologies?.length ? (
         <TaskListSection
@@ -82,7 +222,7 @@ function AssignmentDetailsSections({
         />
       ) : null}
 
-      {assignment.requirements ? (
+      {assignment.requirements?.length ? (
         <TaskListSection
           id="task-requirements"
           title="Task Requirements"
@@ -90,51 +230,17 @@ function AssignmentDetailsSections({
         />
       ) : null}
 
-      {assignment.folderTree ? (
-        <section className="about-section" aria-labelledby="task-structure">
-          <h2 id="task-structure">Required Folder Structure</h2>
-          <div className="task-tree-wrap">
-            <FolderTree nodes={assignment.folderTree} />
-          </div>
-        </section>
+      {assignment.folderTree?.length ? (
+        <FolderStructureSection nodes={assignment.folderTree} />
       ) : null}
 
-      {assignment.examples ? (
-        <section className="about-section" aria-labelledby="task-examples">
-          <h2 id="task-examples">Suggested Examples</h2>
-          <dl className="task-examples">
-            {assignment.examples.map((example) => (
-              <div className="task-examples__row" key={example.path}>
-                <dt>
-                  <code>{example.path}</code>
-                </dt>
-                <dd>
-                  <code>{example.files}</code>
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </section>
+      {assignment.examples?.length ? (
+        <ExamplesSection examples={assignment.examples} />
       ) : null}
 
-      {assignment.submissionSteps ? (
-        <section className="about-section" aria-labelledby="task-github">
-          <h2 id="task-github">GitHub Submission Instructions</h2>
-          <ul className="task-list">
-            {assignment.submissionSteps.map((step) => (
-              <li key={step}>{step}</li>
-            ))}
-          </ul>
-          {assignment.submissionExampleUrl ? (
-            <p className="task-url">
-              <span>Format: </span>
-              <code>{assignment.submissionExampleUrl}</code>
-            </p>
-          ) : null}
-        </section>
-      ) : null}
+      <SubmissionStepsSection assignment={assignment} />
 
-      {assignment.notes ? (
+      {assignment.notes?.length ? (
         <TaskListSection
           id="task-notes"
           title="Important Notes"
@@ -142,65 +248,12 @@ function AssignmentDetailsSections({
         />
       ) : null}
 
-      {assignment.componentSections
-        ? assignment.componentSections.map((component, index) => (
-            <section
-              key={component.title}
-              className="about-section"
-              aria-labelledby={`task-component-${assignment.id}-${index}`}>
-              <h2 id={`task-component-${assignment.id}-${index}`}>
-                {index + 1}. {component.title}
-              </h2>
-              <p className="about-prose">{component.intro}</p>
-              <ul className="task-list">
-                {component.props.map((prop) => (
-                  <li key={prop.name}>
-                    <code>{prop.name}</code>
-                    {" — "}
-                    {prop.description}
-                  </li>
-                ))}
-              </ul>
-              <p className="task-url">
-                <span>Requirement: </span>
-                {component.requirement}
-              </p>
-            </section>
-          ))
-        : null}
+      <ComponentSections assignment={assignment} />
 
-      {assignment.id === "02" && (
-        <section className="about-section" aria-labelledby="task-live-showcase">
-          <h2 id="task-live-showcase">Live Component Showcase</h2>
-          <p className="about-prose">
-            The Button, Card, and Table components described above are
-            demonstrated below. Interactivity and state stay local to this
-            showcase.
-          </p>
-          <Assignment02Showcase />
-        </section>
-      )}
+      {assignment.id === "02" ? <AssignmentShowcaseSection /> : null}
 
       {assignment.endpoints?.length ? (
-        <section className="about-section" aria-labelledby="task-endpoints">
-          <h2 id="task-endpoints">API Endpoints</h2>
-          <p className="about-prose">
-            DummyJSON endpoints used by this assignment. URLs wrap so they stay
-            readable on mobile.
-          </p>
-          {assignment.endpoints.map(({ purpose, endpoint }) => (
-            <p className="task-url" key={purpose}>
-              <span>{purpose}: </span>
-              <a
-                className="about-link"
-                href={endpoint}
-                target="_blank"
-                rel="noopener noreferrer">
-                <code>{endpoint}</code>
-              </a>
-            </p>
-          ))}
-        </section>
+        <AssignmentEndpointsSection endpoints={assignment.endpoints} />
       ) : null}
 
       {assignment.expectedStructure?.length ? (
@@ -235,7 +288,7 @@ function AssignmentDetailsSections({
         />
       ) : null}
 
-      {assignment.generalRequirements ? (
+      {assignment.generalRequirements?.length ? (
         <TaskListSection
           id="task-general"
           title="General Requirements"
