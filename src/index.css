@@ -10,6 +10,21 @@
   --color-hv-accent-hover: #535bf2;
 }
 
+/* ==========================================================================
+   Stylesheet map (src/index.css — the app's single stylesheet, imported
+   once from src/main.tsx):
+     1. Tailwind import + theme tokens
+     2. Global reset + document defaults (shared typography)
+     3. Baseline assignment components (legacy navbar, buttons, showcase,
+        skeleton, empty state, cards, tables, badges)
+     4. Products + product-details
+     5. About + assignment details (+ responsive repair)
+     6. Academy launcher
+     7. Shop page layout, filters, product cards, cart (+ responsive)
+     8. Crystal Store navbar
+     9. Shared accessibility (prefers-reduced-motion, consolidated)
+   ========================================================================== */
+
 /* Assignment 01/02 baseline styles (preserved). Tailwind utilities layer above. */
 /* Light-only theme: no dark mode, no theme switching, no prefers-color-scheme. */
 :root {
@@ -20,6 +35,13 @@
   --color-border: #e4e4ea;
   --color-accent: #646cff;
   --color-accent-hover: #535bf2;
+
+  /* Shared outer-container tokens: consumed by .crystal-nav__page-wrap and
+   * .shop-shell so the navbar wrapper and the Shop shell (hero + products)
+   * always share the same max-width and horizontal gutters. */
+  --content-max-width: 1440px;
+  --content-gutter: 24px;
+  --content-gutter-sm: 12px; /* applied at max-width: 560px */
 
   --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
     sans-serif;
@@ -86,7 +108,10 @@ ul {
   padding-left: 1.25rem;
 }
 
-/* Navbar */
+/* ---- 3. Baseline assignment components (Assignment 01/02) ---- */
+/* Baseline assignment navbar (legacy, preserved). The current app renders
+ * the Crystal Store navbar at the end of this file; no component markup
+ * uses .navbar* classes today. */
 .navbar {
   position: relative;
   border-bottom: 1px solid var(--color-border);
@@ -330,13 +355,6 @@ ul {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .navbar__link,
-  .navbar__link::after {
-    transition: none;
-  }
-}
-
 /* Button */
 .button {
   font: inherit;
@@ -576,6 +594,7 @@ ul {
   background: var(--color-surface);
 }
 
+/* ---- 4. Products + product-details ---- */
 /* Assignment 03 — Products page (appended; baseline above untouched). */
 
 .page--wide {
@@ -855,8 +874,7 @@ ul {
   font-weight: 600;
 }
 
-/* Shop page (scoped `.shop-*` classes only — global styles above untouched). */
-
+/* ---- 5. About + assignment details ---- */
 /* About page (scoped `.about-*` classes; baseline above untouched). */
 
 .about-hero {
@@ -1173,17 +1191,6 @@ ul {
   display: inline-block;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .about-card {
-    transition: none;
-  }
-
-  .about-card:hover {
-    transform: none;
-    box-shadow: none;
-  }
-}
-
 /* About responsive repair (appended; existing rules above untouched).
  * Root causes addressed:
  * - grid/flex children without min-width: 0 could not shrink past
@@ -1305,66 +1312,6 @@ ul {
   }
 }
 
-/* Floating Academy launcher (appended; existing rules above untouched).
- * Circular, fixed, keyboard-accessible; subtle hover/focus only.
- */
-.academy-launcher {
-  position: fixed;
-  right: 1.25rem;
-  bottom: 1.25rem;
-  z-index: 50;
-  display: inline-flex;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 999px;
-  padding: 0;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
-  text-decoration: none;
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease;
-}
-
-.academy-launcher img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-  display: block;
-}
-
-.academy-launcher:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
-}
-
-.academy-launcher:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
-@media (max-width: 480px) {
-  .academy-launcher {
-    right: 0.9rem;
-    bottom: 0.9rem;
-    width: 3rem;
-    height: 3rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .academy-launcher {
-    transition: none;
-  }
-
-  .academy-launcher:hover {
-    transform: none;
-  }
-}
-
 /* Task 01 details experience (appended; existing rules above untouched).
  * Reuses --color-*, .page, .about-*, .button tokens. Light-only theme.
  * Single breakpoint at 640px.
@@ -1480,7 +1427,60 @@ ul {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
-/* ---- Shop page: canvas + nav (scoped) ---- */
+
+/* ---- 6. Academy launcher ---- */
+/* Floating Academy launcher.
+ * Circular, fixed, keyboard-accessible; subtle hover/focus only.
+ * Reduced-motion behavior lives in the consolidated block at the end.
+ */
+.academy-launcher {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 50;
+  display: inline-flex;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 999px;
+  padding: 0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  text-decoration: none;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.academy-launcher img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+}
+
+.academy-launcher:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+}
+
+.academy-launcher:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .academy-launcher {
+    right: 0.9rem;
+    bottom: 0.9rem;
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* ---- 7. Shop page: canvas + content container (scoped) ---- */
 .shop-page {
   flex: 1;
   width: 100%;
@@ -1488,12 +1488,25 @@ ul {
   color: #16161a;
 }
 
+/* Single authoritative content container. Shares --content-max-width and
+ * gutters with .crystal-nav__page-wrap so the navbar wrapper, hero and
+ * product grid keep identical outer boundaries. Block padding is
+ * component-specific (the navbar's own 12px 18px card padding and border
+ * live on .crystal-nav and must not be applied here). */
 .shop-shell {
   width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 20px 24px 36px;
+  max-width: var(--content-max-width);
+  margin-inline: auto;
+  padding: 20px var(--content-gutter) 36px;
 }
+
+/* Hero sizing note: .hv-hero* deliberately has NO rules in this file — the
+ * single source of truth is the inline <style> block in
+ * src/components/humavolve/HumaVolveHero.tsx (the in-flow <img> drives the
+ * section height; the overlay is absolute). The legacy block that used to
+ * live here was removed because its padding / min-height / flex /
+ * absolute-bg rules conflicted with the exact image-box match. Keep this
+ * file free of .hv-hero* sizing rules. */
 
 .shop-nav {
   display: flex;
@@ -1973,7 +1986,6 @@ ul {
 
 /* ---- Shop page: responsive (tablet / mobile) ---- */
 @media (max-width: 900px) {
-  .shop-shell { max-width: 100%; padding: 16px 16px 28px; }
   .shop-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 }
 
@@ -1991,7 +2003,8 @@ ul {
 }
 
 @media (max-width: 560px) {
-  .shop-shell { padding: 12px 12px 24px; }
+  /* Mirrors .crystal-nav__page-wrap: same 12px outer gutter. */
+  .shop-shell { padding-inline: var(--content-gutter-sm); }
   .shop-filters { margin: 14px -12px 18px; padding: 2px 12px 4px; }
   .shop-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2002,38 +2015,15 @@ ul {
   .shop-cart { width: min(94vw, 290px); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .shop-card__add,
-  .shop-card__add:hover,
-  .shop-card:focus-within .shop-card__add {
-    transition: none;
-    opacity: 0;
-    transform: none;
-    pointer-events: none;
-  }
-}
-
-/* ==========================================================================
- * Shop page hero — NOTE: the single source of truth for .hv-hero sizing is
- * src/components/humavolve/HumaVolveHero.css (in-flow <img> drives the
- * section height; overlay is absolute). The legacy block that used to live
- * here was removed because its padding / min-height / flex / absolute-bg
- * rules conflicted with the exact image-box match. Keep this file free of
- * .hv-hero* sizing rules.
- * ========================================================================== */
-
-@media (prefers-reduced-motion: reduce) {
-  .shop-filter {
-    transition: none;
-  }
-}
-
-/* Crystal Store navbar (replaces legacy .navbar block usage). */
+/* ---- 8. Crystal Store navbar (replaces legacy .navbar block usage) ---- */
+/* The wrapper consumes the shared container tokens so it stays aligned with
+ * .shop-shell (max-width + gutters). The .crystal-nav card owns its own
+ * internal padding and border; those never leak into the page content. */
 .crystal-nav__page-wrap {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--content-max-width);
   margin-inline: auto;
-  padding: 12px 24px 0;
+  padding: 12px var(--content-gutter) 0;
 }
 .crystal-nav {
   width: 100%;
@@ -2181,8 +2171,8 @@ ul {
 }
 .crystal-nav__mobile { display: none; }
 @media (max-width: 560px) {
-  .crystal-nav__page-wrap { padding-inline: 12px; }
-  .crystal-nav__row { padding-inline: 12px;}
+  .crystal-nav__page-wrap { padding-inline: var(--content-gutter-sm); }
+  .crystal-nav__row { padding-inline: 12px; }
 }
 @media (max-width: 900px) {
   .crystal-nav__links { gap: 18px; }
@@ -2208,26 +2198,50 @@ ul {
   .crystal-nav__links--mobile .crystal-nav__link { padding: 10px 4px 14px; }
   .crystal-nav__search--mobile { display: block; flex: none; }
 }
+/* ==========================================================================
+   9. Shared accessibility — prefers-reduced-motion (consolidated).
+   Single block placed after every base rule it references, so cascade
+   behavior matches the previous per-component blocks exactly (hover, focus
+   and mobile behavior included). The .hv-hero reduced-motion rule lives
+   inline with its component in src/components/humavolve/HumaVolveHero.tsx.
+   ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  .crystal-nav__cart { transition: none; }
-}
-
-/* Shared content width: navbar, hero and products */
-.shop-shell {
-  width: 100%;
-  max-width: 1440px;
-  margin-inline: auto;
-  padding: 20px 24px 36px;
-}
-
-@media (max-width: 900px) {
-  .shop-shell {
-    padding-inline: 24px;
+  .navbar__link,
+  .navbar__link::after {
+    transition: none;
   }
-}
 
-@media (max-width: 560px) {
-  .shop-shell {
-    padding-inline: 12px;
+  .about-card {
+    transition: none;
+  }
+
+  .about-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .academy-launcher {
+    transition: none;
+  }
+
+  .academy-launcher:hover {
+    transform: none;
+  }
+
+  .shop-card__add,
+  .shop-card__add:hover,
+  .shop-card:focus-within .shop-card__add {
+    transition: none;
+    opacity: 0;
+    transform: none;
+    pointer-events: none;
+  }
+
+  .shop-filter {
+    transition: none;
+  }
+
+  .crystal-nav__cart {
+    transition: none;
   }
 }
