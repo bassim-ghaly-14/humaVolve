@@ -24,7 +24,10 @@ import {
 import type { Product } from "../types/product.types";
 
 function errorMessage(error: unknown): string {
-  if (error instanceof Error && error.message) return error.message;
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
   return "Something went wrong while loading products.";
 }
 
@@ -42,6 +45,110 @@ function addLine(lines: CartLine[], product: Product): CartLine[] {
   return [...lines, { product, quantity: 1 }];
 }
 
+function updateSearchParams(
+  searchParams: URLSearchParams,
+  setSearchParams: ReturnType<typeof useSearchParams>[1],
+  key: string,
+  value?: string,
+): void {
+  const params = new URLSearchParams(searchParams);
+
+  if (value) {
+    params.set(key, value);
+  } else {
+    params.delete(key);
+  }
+
+  setSearchParams(params, { replace: true });
+}
+
+function getTotalPages(total: number, limit: number): number {
+  if (total === 0) {
+    return 0;
+  }
+
+  return Math.max(1, Math.ceil(total / limit));
+}
+
+function getSafePage(page: number, totalPages: number): number {
+  if (totalPages === 0) {
+    return 0;
+  }
+
+  return Math.min(page, totalPages - 1);
+}
+
+function ShopStatus({
+  isLoading,
+  isError,
+  error,
+  hasProducts,
+  search,
+  categoryLabel,
+  onRetry,
+  onClearSearch,
+  onViewAll,
+}: {
+  isLoading: boolean;
+  isError: boolean;
+  error: unknown;
+  hasProducts: boolean;
+  search: string;
+  categoryLabel: string;
+  onRetry: () => void;
+  onClearSearch: () => void;
+  onViewAll: () => void;
+}) {
+  if (isLoading && !hasProducts) {
+    return (
+      <div className="shop-status" aria-live="polite">
+        <LoadingSkeleton lines={8} />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="shop-status" role="alert">
+        <p>{errorMessage(error)}</p>
+        <Button text="Retry" variant="primary" onClick={onRetry} />
+      </div>
+    );
+  }
+
+  if (hasProducts) {
+    return null;
+  }
+
+  return (
+    <div className="shop-status">
+      <EmptyState
+        title={
+          search
+            ? `No results for “${search}”`
+            : `No products in ${categoryLabel}`
+        }
+        description="Try a different keyword or another category."
+        action={
+          search ? (
+            <Button
+              text="Clear search"
+              variant="secondary"
+              onClick={onClearSearch}
+            />
+          ) : (
+            <Button
+              text="View all products"
+              variant="secondary"
+              onClick={onViewAll}
+            />
+          )
+        }
+      />
+    </div>
+  );
+}
+
 /**
  * Shop page — preserves existing behavior and applies a subtle,
  * page-scoped typography increase without affecting the hero.
@@ -53,21 +160,15 @@ export default function Products() {
   const [cartLines, setCartLines] = useState<CartLine[]>([]);
 
   const drawerOpen = searchParams.get("cart") === "open";
+  const urlSearch = searchParams.get("search") ?? "";
+  const effectiveSearch = useDebounce(urlSearch, 350).trim();
 
   const closeCart = (): void => {
-    const params = new URLSearchParams(searchParams);
-    params.delete("cart");
-    setSearchParams(params, { replace: true });
+    updateSearchParams(searchParams, setSearchParams, "cart");
   };
 
-  const urlSearch = searchParams.get("search") ?? "";
-  const debouncedInput = useDebounce(urlSearch, 350);
-  const effectiveSearch = debouncedInput.trim();
-
   const clearSearch = (): void => {
-    const params = new URLSearchParams(searchParams);
-    params.delete("search");
-    setSearchParams(params, { replace: true });
+    updateSearchParams(searchParams, setSearchParams, "search");
   };
 
   const activeCategory = getShopCategory(category);
@@ -101,15 +202,23 @@ export default function Products() {
   const products = useMemo(() => keywordFiltered, [keywordFiltered]);
   const total = activeCategory.keyword ? products.length : (data?.total ?? 0);
 
-  const totalPages = total === 0 ? 0 : Math.max(1, Math.ceil(total / limit));
-
-  const safePage = totalPages === 0 ? 0 : Math.min(queryPage, totalPages - 1);
+  const totalPages = getTotalPages(total, limit);
+  const safePage = getSafePage(queryPage, totalPages);
 
   const visibleProducts = activeCategory.keyword
     ? products.slice(safePage * limit, safePage * limit + limit)
     : products;
 
   const showInitialLoading = isLoading && products.length === 0;
+  const hasVisibleProducts = visibleProducts.length > 0;
+
+  const handlePageChange = (nextPage: number): void => {
+    if (nextPage < 0 || nextPage >= totalPages) {
+      return;
+    }
+
+    setPage(nextPage);
+  };
 
   return (
     <main className="shop-page" aria-labelledby="hv-hero-heading">
@@ -117,47 +226,20 @@ export default function Products() {
         <HumaVolveHero />
 
         <div className="shop-typography" style={{ fontSize: "108%" }}>
-          <ShopFilters active={category} onChange={(key) => setCategory(key)} />
+          <ShopFilters active={category} onChange={setCategory} />
 
-          {showInitialLoading ? (
-            <div className="shop-status" aria-live="polite">
-              <LoadingSkeleton lines={8} />
-            </div>
-          ) : isError ? (
-            <div className="shop-status" role="alert">
-              <p>{errorMessage(error)}</p>
-              <Button
-                text="Retry"
-                variant="primary"
-                onClick={() => void refetch()}
-              />
-            </div>
-          ) : visibleProducts.length === 0 ? (
-            <div className="shop-status">
-              <EmptyState
-                title={
-                  effectiveSearch
-                    ? `No results for “${effectiveSearch}”`
-                    : `No products in ${activeCategory.label}`
-                }
-                description="Try a different keyword or another category."
-                action={
-                  effectiveSearch ? (
-                    <Button
-                      text="Clear search"
-                      variant="secondary"
-                      onClick={clearSearch}
-                    />
-                  ) : (
-                    <Button
-                      text="View all products"
-                      variant="secondary"
-                      onClick={() => setCategory("all")}
-                    />
-                  )
-                }
-              />
-            </div>
+          {!hasVisibleProducts || showInitialLoading || isError ? (
+            <ShopStatus
+              isLoading={showInitialLoading}
+              isError={isError}
+              error={error}
+              hasProducts={false}
+              search={effectiveSearch}
+              categoryLabel={activeCategory.label}
+              onRetry={() => void refetch()}
+              onClearSearch={clearSearch}
+              onViewAll={() => setCategory("all")}
+            />
           ) : (
             <>
               <div className="shop-grid" aria-busy={isFetching}>
@@ -172,27 +254,18 @@ export default function Products() {
                 ))}
               </div>
 
-              {isFetching && !showInitialLoading ? (
+              {isFetching && !showInitialLoading && (
                 <p className="shop-updating" aria-live="polite">
                   Updating…
                 </p>
-              ) : null}
+              )}
 
               <div className="mt-5">
                 <ProductsPagination
                   page={safePage}
                   totalPages={totalPages}
                   isFetching={isFetching}
-                  onPageChange={(nextPage) => {
-                    if (
-                      nextPage < 0 ||
-                      (totalPages > 0 && nextPage >= totalPages)
-                    ) {
-                      return;
-                    }
-
-                    setPage(nextPage);
-                  }}
+                  onPageChange={handlePageChange}
                 />
               </div>
             </>
