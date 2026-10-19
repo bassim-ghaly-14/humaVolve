@@ -8,20 +8,23 @@ import {
 } from "react-router-dom";
 import { Menu, Search, ShoppingCart, X } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
+import { useShopCart } from "../../hooks/useShopCart";
 
 /**
  * Crystal Store navigation bar.
  * Four sections: brand, primary links, search, View Cart.
  * Single instance rendered from App; pages must not duplicate it.
  * SHOP dot is route-driven via NavLink. Search uses the shared URL
- * `search` param consumed by the Shop page. View Cart opens the
- * existing Shop cart drawer via /shop?cart=open (no cart page exists).
+ * `search` param consumed by the Shop page. View Cart links to the
+ * dedicated /cart page and shows the live item count from the shared
+ * shop cart context.
  */
 export function Navbar() {
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { itemCount } = useShopCart();
 
   const query = searchParams.get("search") ?? "";
   const onShopRoute =
@@ -137,10 +140,19 @@ export function Navbar() {
           </div>
           <Link
             className="crystal-nav__cart"
-            to={`${ROUTES.SHOP}?cart=open`}
-            aria-label="View cart">
+            to={ROUTES.CART}
+            aria-label={
+              itemCount > 0
+                ? `View cart, ${itemCount} ${itemCount === 1 ? "item" : "items"}`
+                : "View cart"
+            }>
             <ShoppingCart size={16} aria-hidden="true" />
             <span>View Cart</span>
+            {itemCount > 0 && (
+              <span className="crystal-nav__cart-count" aria-hidden="true">
+                {itemCount}
+              </span>
+            )}
           </Link>
           <button
             type="button"

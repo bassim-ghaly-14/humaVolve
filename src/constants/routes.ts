@@ -3,6 +3,7 @@
  *
  * SHOP is the canonical storefront listing (the former Products page).
  * PRODUCTS is kept as a legacy alias so old links keep working.
+ * CART is the dedicated full-page shopping cart.
  */
 
 export const ROUTES = {
@@ -13,6 +14,7 @@ export const ROUTES = {
   SHOP: '/shop',
   PRODUCTS: '/products',
   PRODUCT_DETAIL_PATTERN: '/products/:id',
+  CART: '/cart',
   COLLECTIONS: '/collections',
   CONTACT: '/contact',
 } as const;

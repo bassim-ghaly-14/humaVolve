@@ -6,10 +6,7 @@ import { Button } from "../components/ui/Button";
 import { HumaVolveHero } from "../components/humavolve/HumaVolveHero";
 import { ShopFilters } from "../components/shop/ShopFilters";
 import { ShopCard } from "../components/shop/ShopCard";
-import {
-  ShopCartDrawer,
-  type CartLine,
-} from "../components/shop/ShopCartDrawer";
+import { useShopCart } from "../hooks/useShopCart";
 import {
   getShopCategory,
   useShopKeywordFilter,
@@ -21,7 +18,6 @@ import {
   SHOP_PRODUCTS_PAGE_SIZE,
   useShopProductsList,
 } from "../hooks/useProducts";
-import type { Product } from "../types/product.types";
 
 function errorMessage(error: unknown): string {
   if (error instanceof Error && error.message) {
@@ -29,20 +25,6 @@ function errorMessage(error: unknown): string {
   }
 
   return "Something went wrong while loading products.";
-}
-
-function addLine(lines: CartLine[], product: Product): CartLine[] {
-  const existing = lines.find((line) => line.product.id === product.id);
-
-  if (existing) {
-    return lines.map((line) =>
-      line.product.id === product.id
-        ? { ...line, quantity: line.quantity + 1 }
-        : line,
-    );
-  }
-
-  return [...lines, { product, quantity: 1 }];
 }
 
 function updateSearchParams(
@@ -157,15 +139,10 @@ export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [category, setCategory] = useState<ShopCategoryKey>("all");
   const [page, setPage] = useState(0);
-  const [cartLines, setCartLines] = useState<CartLine[]>([]);
+  const { addProduct } = useShopCart();
 
-  const drawerOpen = searchParams.get("cart") === "open";
   const urlSearch = searchParams.get("search") ?? "";
   const effectiveSearch = useDebounce(urlSearch, 350).trim();
-
-  const closeCart = (): void => {
-    updateSearchParams(searchParams, setSearchParams, "cart");
-  };
 
   const clearSearch = (): void => {
     updateSearchParams(searchParams, setSearchParams, "search");
@@ -247,9 +224,7 @@ export default function Products() {
                   <ShopCard
                     key={product.id}
                     product={product}
-                    onAdd={(item) =>
-                      setCartLines((lines) => addLine(lines, item))
-                    }
+                    onAdd={addProduct}
                   />
                 ))}
               </div>
@@ -272,18 +247,6 @@ export default function Products() {
           )}
         </div>
       </div>
-
-      <ShopCartDrawer
-        open={drawerOpen}
-        lines={cartLines}
-        onClose={closeCart}
-        onRemove={(id) =>
-          setCartLines((lines) =>
-            lines.filter((line) => line.product.id !== id),
-          )
-        }
-        onClear={() => setCartLines([])}
-      />
     </main>
   );
 }
