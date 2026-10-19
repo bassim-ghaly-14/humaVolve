@@ -1,4 +1,6 @@
-/** Intentionally blank homepage placeholder within the existing app shell. */
+import PlaceholderPage from "./PlaceholderPage";
+
+/** Home placeholder: route stays valid within the existing app shell. */
 export default function Home() {
-  return <main className="page" aria-label="Home" />;
+  return <PlaceholderPage title="Home" />;
 }

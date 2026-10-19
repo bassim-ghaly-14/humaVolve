@@ -71,6 +71,7 @@ export const ASSIGNMENTS: Assignment[] = [
     taskLabel: 'Task 01',
     title: 'React Project Structure Task',
     category: 'Assignment',
+    course: 'React Course',
     shortDescription:
       'Practice building a clean, scalable React project structure with clearly organized folders and example files.',
     intro:

@@ -7,8 +7,8 @@ export function HumaVolveGoals() {
         <p className="about-prose">
           The repository grows without restructuring. Each assignment lands in
           the same codebase and reuses the foundation before it. Assignment
-          showcases live on their details pages, and Products builds on the
-          same typed-module conventions.
+          showcases live on their details pages, and Products builds on the same
+          typed-module conventions.
         </p>
         <ul className="about-approach">
           <li>
@@ -60,9 +60,6 @@ export function HumaVolveGoals() {
             </ul>
           </div>
         </div>
-        <p className="about-note">
-          React Query and Tailwind arrived with Task 03 only.
-        </p>
       </section>
     </>
   );
