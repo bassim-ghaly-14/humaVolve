@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import "./humavolve/HumaVolveDetails.css";
 import { getAssignmentById, type FolderNode } from "../data/assignments";
 import { ROUTES } from "../constants/routes";
 import { EmptyState } from "../components/common/EmptyState";
@@ -313,7 +314,7 @@ export default function AssignmentDetails() {
   if (!assignment) {
     return (
       <main
-        className="page page--wide about"
+        className="page page--wide about hv-details"
         aria-labelledby="assignment-missing">
         <Link className="products-back" to={ROUTES.HUMAVOLVE}>
           <ArrowLeft aria-hidden="true" size={16} /> Back to assignments
@@ -336,7 +337,7 @@ export default function AssignmentDetails() {
 
   return (
     <main
-      className="page page--wide about task-details"
+      className="page page--wide about task-details hv-details"
       aria-labelledby="task-details-title">
       <Link className="products-back" to={ROUTES.HUMAVOLVE}>
         <ArrowLeft aria-hidden="true" size={16} /> Back to assignments

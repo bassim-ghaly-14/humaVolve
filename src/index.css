@@ -2208,12 +2208,28 @@ ul {
   .crystal-nav__page-wrap { padding-inline: var(--content-gutter-sm); }
   .crystal-nav__row { padding-inline: 12px; }
 }
+/* Intermediate desktop band. The base row (28px link gap, 280px search,
+ * 20px row gap) needs ~1019px of viewport before the nowrap link list —
+ * About included — stops colliding with the search field, so gaps and the
+ * search basis are tightened for 901px-1024px. */
+@media (max-width: 1024px) {
+  .crystal-nav__row { gap: 16px; }
+  .crystal-nav__links { gap: 20px; }
+  .crystal-nav__search { flex-basis: 200px; }
+}
+/* Compact desktop band: keeps the full row only where it measurably fits
+ * (>= 861px measured in Chrome). The search field narrows further so the
+ * primary links never shrink below their content width. */
 @media (max-width: 900px) {
   .crystal-nav__links { gap: 18px; }
-  .crystal-nav__search { flex-basis: 200px; }
+  .crystal-nav__search { flex-basis: 160px; }
   .crystal-nav__cart { padding: 10px 14px; }
+  .crystal-nav__row { gap: 16px; }
 }
-@media (max-width: 720px) {
+/* Mobile takeover (was 720px). Below 861px, brand + links + search + cart
+ * cannot share one row without About overlapping the search field, so the
+ * hamburger menu takes over instead. */
+@media (max-width: 860px) {
   .crystal-nav__primary, .crystal-nav__row > .crystal-nav__search { display: none; }
   .crystal-nav__toggle { display: inline-flex; }
   .crystal-nav__row { gap: 12px; }

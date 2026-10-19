@@ -1,0 +1,205 @@
+/* ==========================================================================
+   HumaVolve detail experience — purple & white visual identity
+   Routes: /humavolve and /assignments/:id (assignments 01/02/03 share one
+   page component). Both render <main class="page page--wide about hv-details">
+   and import this stylesheet, so nothing here renders outside those routes.
+
+   Scoping strategy:
+   - Every selector is prefixed with .hv-details, except the viewport tint
+     which uses html/body/#root:has(.hv-details) so it only applies while a
+     detail page is mounted.
+   - Section 1 re-points the shared --color-* tokens as page-local aliases.
+     Existing global rules (.button, .about-*, .task-*, .showcase, .table,
+     .empty-state, .products-back) read those tokens, so they resolve in
+     purple/white inside these pages without being duplicated or edited —
+     and they keep their original values everywhere else.
+   - Logical-safe: all overrides use symmetric padding/margins, so an RTL
+     flip (if ever added) needs no changes here. Light-only palette.
+
+   Palette (all pairs below are WCAG AA or better):
+     --hv-purple        #6d28d9  primary actions, links, accents (7.1:1 on white)
+     --hv-purple-hover  #5b21b6  hover/focus, badge text
+     --hv-purple-soft   #ede9fe  lavender badges, code, metadata
+     white              #ffffff  content surfaces (sections, cards)
+     --hv-page-bg       #f7f6fb  soft neutral viewport background
+     --hv-text          #1f1b2e  headings and body text
+     --hv-muted         #625e7a  secondary text (6.2:1 on white)
+   ========================================================================== */
+
+/* ---- Viewport: soft neutral background on these routes only ---------- *
+ * The custom property is declared on <html> so <body> and #root can
+ * inherit it; ancestors cannot read properties defined on descendants. */
+html:has(.hv-details) {
+  --hv-page-bg: #f7f6fb;
+  background-color: var(--hv-page-bg);
+}
+
+body:has(.hv-details),
+#root:has(.hv-details) {
+  background-color: var(--hv-page-bg);
+}
+
+/* ---- 1. Page-local tokens: palette + aliases of the shared tokens ---- */
+.hv-details {
+  --hv-purple: #6d28d9;
+  --hv-purple-hover: #5b21b6;
+  --hv-purple-soft: #ede9fe;
+  --hv-purple-border: #ddd6fe;
+  --hv-surface: #ffffff;
+  --hv-surface-soft: #f8f6ff;
+  --hv-border: #e6e1f4;
+  --hv-border-soft: #ece8f8;
+  --hv-text: #1f1b2e;
+  --hv-muted: #625e7a;
+  --hv-shadow: 0 1px 2px rgba(31, 27, 46, 0.05);
+
+  /* Local aliases: only declarations inside .hv-details re-resolve. */
+  --color-accent: var(--hv-purple);
+  --color-accent-hover: var(--hv-purple-hover);
+  --color-bg: var(--hv-page-bg);
+  --color-surface: var(--hv-surface);
+  --color-border: var(--hv-border);
+  --color-text: var(--hv-text);
+  --color-text-muted: var(--hv-muted);
+
+  color: var(--hv-text);
+  background-color: var(--hv-page-bg);
+  /* The global responsive-repair rule (.about { max-width: 100% },
+   * index.css) defeats .page--wide's 1100px cap on these two pages;
+   * re-state it here (this stylesheet loads after index.css). */
+  max-width: 1100px;
+  padding-block: 1.5rem 3rem;
+}
+
+/* ---- 2. Headings, metadata, prose ------------------------------------ */
+.hv-details .eyebrow {
+  /* Block-level so it never shares a line with the back link, but
+   * shrink-to-fit so the pill hugs its text. */
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  align-items: center;
+  padding: 0.25rem 0.65rem;
+  margin: 0 0 0.85rem;
+  background: var(--hv-purple-soft);
+  border: 1px solid var(--hv-purple-border);
+  border-radius: 6px;
+  color: var(--hv-purple-hover);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.hv-details h1 {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.65rem, 3.5vw, 2.15rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  overflow-wrap: break-word;
+}
+
+.hv-details .about-section > h2 {
+  font-size: 1.3rem;
+  line-height: 1.3;
+  margin: 0 0 0.65rem;
+}
+
+.hv-details .about-prose {
+  max-width: 70ch;
+}
+
+/* ---- 3. Sections: white content surfaces ---------------------------- */
+.hv-details .about-section {
+  margin-bottom: 1.15rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--hv-surface);
+  border: 1px solid var(--hv-border);
+  border-radius: 12px;
+  box-shadow: var(--hv-shadow);
+}
+
+/* Submission CTA: same white surface treatment as the sections. */
+.hv-details .about-closing {
+  margin-top: 1.15rem;
+  background: var(--hv-surface);
+  border-color: var(--hv-border);
+  border-radius: 12px;
+  box-shadow: var(--hv-shadow);
+}
+
+/* ---- 4. Nested cards & panels: soft lavender layering on white ------ */
+.hv-details .about-card,
+.hv-details .about-approach li,
+.hv-details .about-tech__panel,
+.hv-details .task-tree-wrap,
+.hv-details .showcase .status,
+.hv-details .status {
+  background: var(--hv-surface-soft);
+  border-color: var(--hv-border-soft);
+}
+
+.hv-details .about-card {
+  border-radius: 10px;
+  /* Keep the purple top accent defined globally on .about-card. */
+  border-top-color: var(--hv-purple);
+}
+
+.hv-details .about-card:hover {
+  box-shadow: 0 6px 16px rgba(76, 45, 135, 0.1);
+}
+
+/* Empty/error states stay white with a clearly visible dashed border. */
+.hv-details .empty-state {
+  background: var(--hv-surface);
+  border-color: var(--hv-border);
+}
+
+/* ---- 5. Metadata, badges, code, lists -------------------------------- */
+.hv-details .about-status,
+.hv-details .badge {
+  background: var(--hv-purple-soft);
+  border-color: var(--hv-purple-border);
+  color: var(--hv-purple-hover);
+}
+
+.hv-details code {
+  background: var(--hv-purple-soft);
+  color: var(--hv-text);
+}
+
+.hv-details .task-list li::marker {
+  color: var(--hv-purple);
+}
+
+/* ---- 6. Tables and live showcase ------------------------------------- */
+.hv-details .table thead th,
+.hv-details .table--striped tbody tr:nth-child(even) {
+  background: var(--hv-surface-soft);
+}
+
+/* ---- 7. Responsive padding (matches the global 768px/480px rhythm) --- */
+@media (max-width: 768px) {
+  .hv-details {
+    padding-block: 1.25rem 2.25rem;
+  }
+
+  .hv-details .about-section {
+    padding: 1.25rem 1.15rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hv-details {
+    padding-block: 1rem 2rem;
+  }
+
+  .hv-details .about-section {
+    padding: 1.1rem 0.95rem;
+    margin-bottom: 0.9rem;
+    border-radius: 10px;
+  }
+
+  .hv-details .eyebrow {
+    font-size: 0.72rem;
+  }
+}
